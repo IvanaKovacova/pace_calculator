@@ -49,36 +49,45 @@ while True:
 
     if event == 'calculate_duration':
 
-        dur_in_s = duration_calculator(
-            values['pace_mins'], 
-            values['pace_secs'], 
-            values['distance']
-            )
-        duration_mins = int(dur_in_s//60)
-        duration_secs = int(dur_in_s - 60*duration_mins)
-        window['duration_min'].update(value=duration_mins)
-        window['duration_sec'].update(value=duration_secs)
+        try:
+            dur_in_s = duration_calculator(
+                values['pace_mins'], 
+                values['pace_secs'], 
+                values['distance']
+                )
+            duration_mins = int(dur_in_s//60)
+            duration_secs = int(dur_in_s - 60*duration_mins)
+            window['duration_min'].update(value=duration_mins)
+            window['duration_sec'].update(value=duration_secs)
+        except ValueError:
+            sg.popup('All inputs must be digits 0-9')
 
     elif event == 'calculate_distance':
 
-        dist = distance_calculator(
-            values['pace_mins'], 
-            values['pace_secs'],
-            values['duration_min'],
-            values['duration_sec'])
-        window['distance'].update(value=dist)
+        try:
+            dist = distance_calculator(
+                values['pace_mins'], 
+                values['pace_secs'],
+                values['duration_min'],
+                values['duration_sec'])
+            window['distance'].update(value=dist)
+        except ValueError:
+            sg.popup('All inputs must be digits 0-9')
 
     elif event == 'calculate_pace':
 
-        pace_in_s = pace_calculator(
-            values['duration_min'],
-            values['duration_sec'],
-            values['distance']
-        )
-        pace_min = int(pace_in_s//60)
-        pace_sec = int(pace_in_s - 60*pace_min)
-        window['pace_mins'].update(value=pace_min)
-        window['pace_secs'].update(value=pace_sec)        
+        try:
+            pace_in_s = pace_calculator(
+                values['duration_min'],
+                values['duration_sec'],
+                values['distance']
+            )
+            pace_min = int(pace_in_s//60)
+            pace_sec = int(pace_in_s - 60*pace_min)
+            window['pace_mins'].update(value=pace_min)
+            window['pace_secs'].update(value=pace_sec)    
+        except ValueError:
+            sg.popup('All inputs must be digits 0-9')    
 
     elif event == 'close' or event == sg.WIN_CLOSED:
         break
