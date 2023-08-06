@@ -3,15 +3,6 @@ import PySimpleGUI as sg
 from functions import distance_calculator, duration_calculator, pace_calculator
 
 sg.theme('LightGreen6')
-options = {
-    'font':('Helvetica', 20, 'bold'),
-    'title_color':'grey',
-    'tab_background_color':'green',
-    'selected_title_color':'white',
-    'selected_background_color':'lightgreen',
-    'enable_events':True,
-    'tab_location':'topleft',
-}
 
 pace_tab_layout =  [
     [sg.T('Distance in meters:')],
