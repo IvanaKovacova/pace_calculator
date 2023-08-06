@@ -1,8 +1,9 @@
 import PySimpleGUI as sg
 
-from functions import distance_calculator, duration_calculator, pace_calculator
+from functions import (distance_calculator, duration_calculator,
+                       pace_calculator, splits_calculator)
 
-sg.theme('LightGreen6')
+sg.theme('BlueMono')
 
 pace_tab_layout =  [
     [sg.T('Distance in meters:')],
@@ -31,12 +32,40 @@ duration_tab_layout =  [
     [sg.T('', key='duration_result')]
     ]   
 
+headings = ['Split Distance', 'Split Time']
+data = []
+splits_tab_layout =  [
+    [sg.T('Pace in min/km:')],
+    [sg.InputText(default_text=0, key ='pace_mins3'), sg.T('min'),sg.InputText(default_text=0, key='pace_secs3'), sg.T('sec')],
+    [sg.T('Distance:')],
+    [sg.InputText(default_text=0, key='distance3'), sg.T('meters')],
+    [sg.T('Splits by')],
+    [sg.InputText(default_text=0, key='splits'), sg.T('meters')],
+    [sg.B('Calculate Splits', key='calculate_splits')],
+    [sg.T('', key='splits_result')],
+    [sg.Table(
+        values=data,
+        headings = headings, 
+        auto_size_columns=False, 
+        enable_click_events=False,
+        key='splits_table',
+        expand_x=True,
+        visible=False)
+        ]
+    ]   
+
 layout = [
     [sg.TabGroup([
-        [sg.Tab('Calculate Pace', pace_tab_layout),sg.Tab('Calculate Distance', distance_tab_layout),sg.Tab('Calculate Duration', duration_tab_layout)]])],
-        [sg.Button('Exit', key='close')]]    
+        [sg.Tab('Calculate Pace', pace_tab_layout),
+        sg.Tab('Calculate Distance', distance_tab_layout),
+        sg.Tab('Calculate Duration', duration_tab_layout), 
+        sg.Tab('Calculate Splits', splits_tab_layout)]
+        ])
+        ],
+        [sg.Button('Exit', key='close')]
+    ]    
 
-window = sg.Window('Running Calculator', layout, default_element_size=(12,1))    
+window = sg.Window('Running Calculator', layout, default_element_size=(20,1))    
 
 while True:    
     event, values = window.read()    
@@ -85,6 +114,20 @@ while True:
             duration_res = f'{duration_mins} min {duration_secs} s'
             window['duration_result'].update(value=duration_res)
 
+        except ValueError:
+            sg.popup('All inputs must be digits 0-9')   
+        continue
+
+    elif event == 'calculate_splits':
+        try:
+            output = splits_calculator(float(values['pace_mins3']),float(values['pace_secs3']), int(values['distance3']), int(values['splits']))
+            new_table = []
+            position = 0
+            while position < len(output[0]):
+                row = [output[0][position], output[1][position]]
+                new_table.append(row)
+                position+=1
+            window['splits_table'].update(values=new_table, visible=True)
         except ValueError:
             sg.popup('All inputs must be digits 0-9')   
         continue
