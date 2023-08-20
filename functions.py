@@ -12,3 +12,30 @@ def pace_calculator(duration_mins, duration_secs, distance):
     distance_in_kms = float(distance)/1000
     duration_in_seconds = float(duration_mins)*60 + float(duration_secs)
     return duration_in_seconds/distance_in_kms
+
+# splits function
+def splits_calculator(pace_min, pace_sec, total_distance, splits):
+    pace_in_seconds = int(pace_min)*60 + int(pace_sec)
+    list_of_distances = list(range(splits, total_distance+1, splits))
+    total_seconds = [distance/1000*pace_in_seconds for distance in list_of_distances]
+    mins = [int(seconds/60) for seconds in total_seconds]
+    sec = [int(seconds%60) for seconds in total_seconds]
+
+    position = 0
+    duration_list = []
+    while position < len(mins):
+        if mins[position] == 0:
+            duration = f'{sec[position]}s'
+        elif sec[position] == 0:
+            duration = f'{mins[position]}min'
+        else:
+            duration = f'{mins[position]}min {sec[position]}s'
+        duration_list.append(duration)
+        position +=1
+
+    return list_of_distances, duration_list
+
+if __name__ == '__main__':
+    secs = splits_calculator(5,0,500,100)
+    print(secs)
+
