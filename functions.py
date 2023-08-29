@@ -35,7 +35,12 @@ def splits_calculator(pace_min, pace_sec, total_distance, splits):
 
     return list_of_distances, duration_list
 
+def speed_calculator(pace_min, pace_sec):
+    pace_in_min = pace_min + pace_sec/60
+    speed = 60/pace_in_min
+    return speed
+
 if __name__ == '__main__':
-    secs = splits_calculator(5,0,500,100)
-    print(secs)
+    sap = speed_calculator(5,0)
+    print(sap)
 

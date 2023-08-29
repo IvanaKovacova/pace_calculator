@@ -34,7 +34,7 @@ duration_tab_layout =  [
     [sg.InputText(default_text=0, key='distance2'), sg.T('meters')],
     [sg.B('Calculate Duration', key='calculate_duration')],
     [sg.T('', key='duration_result')]
-    ]   
+    ]
 
 headings = ['Split Distance', 'Split Time']
 data = []
@@ -59,12 +59,22 @@ splits_tab_layout =  [
         ]
     ]   
 
+speed_pace_layout = [
+    [sg.T('Pace in min/km:')],
+    [sg.InputText(default_text=0, key ='pace_mins4'), sg.T('min'),
+    sg.InputText(default_text=0, key='pace_secs4'), sg.T('sec')],
+    [sg.T('Speed:')],
+    [sg.InputText(default_text=0, key='speed'), sg.T('km/h')],
+    [sg.B('Calculate', key='calculate_speed')],
+]
+
 layout = [
     [sg.TabGroup([
         [sg.Tab('Calculate Pace', pace_tab_layout),
         sg.Tab('Calculate Distance', distance_tab_layout),
         sg.Tab('Calculate Duration', duration_tab_layout), 
-        sg.Tab('Calculate Splits', splits_tab_layout)]
+        sg.Tab('Calculate Splits', splits_tab_layout),
+        sg.Tab('Speed/Pace Converter',speed_pace_layout)]
         ])
         ],
         [sg.Button('Exit', key='close')]
@@ -102,7 +112,6 @@ while True:
                 values['duration_sec2'])
             dist_formated = f'{int(dist)} meters'
             window['distance_result'].update(value=dist_formated)
-            print(dist)
         except ValueError:
             sg.popup('All inputs must be digits 0-9')
         continue
@@ -138,6 +147,15 @@ while True:
                 new_table.append(row)
                 position+=1
             window['splits_table'].update(values=new_table, visible=True)
+        except ValueError:
+            sg.popup('All inputs must be digits 0-9')   
+        continue
+    
+    elif event == 'calculate_speed':
+        try:
+            pass
+        #function is already defined
+
         except ValueError:
             sg.popup('All inputs must be digits 0-9')   
         continue
