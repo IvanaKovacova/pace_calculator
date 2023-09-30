@@ -1,7 +1,8 @@
 import PySimpleGUI as sg
 
 from functions import (distance_calculator, duration_calculator,
-                       pace_calculator, splits_calculator)
+                       pace_calculator, splits_calculator, speed_calculator,
+                       pace_from_speed)
 
 sg.theme('BlueMono')
 
@@ -34,7 +35,7 @@ duration_tab_layout =  [
     [sg.InputText(default_text=0, key='distance2'), sg.T('meters')],
     [sg.B('Calculate Duration', key='calculate_duration')],
     [sg.T('', key='duration_result')]
-    ]   
+    ]
 
 headings = ['Split Distance', 'Split Time']
 data = []
@@ -59,12 +60,25 @@ splits_tab_layout =  [
         ]
     ]   
 
+speed_pace_layout = [
+    [sg.T('Pace in min/km:')],
+    [sg.InputText(default_text=0, key ='pace_mins4'), sg.T('min'),
+    sg.InputText(default_text=0, key='pace_secs4'), sg.T('sec')],
+    [sg.B('Convert to Speed', key='calculate_speed')],
+    [sg.T('', key='speed_result')], 
+    [sg.T('Speed:')],
+    [sg.InputText(default_text=0, key='speed'), sg.T('km/h')],
+    [sg.B('Convert to Pace', key='convert_pace')],
+    [sg.T('', key='converted_pace')]
+]
+
 layout = [
     [sg.TabGroup([
         [sg.Tab('Calculate Pace', pace_tab_layout),
         sg.Tab('Calculate Distance', distance_tab_layout),
         sg.Tab('Calculate Duration', duration_tab_layout), 
-        sg.Tab('Calculate Splits', splits_tab_layout)]
+        sg.Tab('Calculate Splits', splits_tab_layout),
+        sg.Tab('Speed/Pace Converter',speed_pace_layout)]
         ])
         ],
         [sg.Button('Exit', key='close')]
@@ -102,7 +116,6 @@ while True:
                 values['duration_sec2'])
             dist_formated = f'{int(dist)} meters'
             window['distance_result'].update(value=dist_formated)
-            print(dist)
         except ValueError:
             sg.popup('All inputs must be digits 0-9')
         continue
@@ -141,5 +154,25 @@ while True:
         except ValueError:
             sg.popup('All inputs must be digits 0-9')   
         continue
+
+  #this needs correction  
+    elif event == 'calculate_speed':
+        try:
+            speed_res = speed_calculator(float(values['pace_mins4']), float(values['pace_secs4']))
+            window['speed_result'].update(value = f'{speed_res} km/h')
+        except ValueError:
+           sg.popup('All inputs must be digits 0-9')   
+        continue
+
+
+    elif event=='convert_pace':
+        speed = values['speed'].replace(',', '.')
+        try:
+            pace_res = pace_from_speed(speed)
+            window['converted_pace'].update(value=pace_res)
+        except ValueError:
+           sg.popup('All inputs must be digits 0-9')   
+        continue       
+
 
 window.close()
